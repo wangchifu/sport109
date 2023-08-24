@@ -1,0 +1,296 @@
+<?php
+include_once "109.conf.php";
+include_once "db_connect.php";
+//如果整個程式都須認證,請拿開下行註解
+//Auth();//簡易認證
+// session_start();
+
+
+//a.建立物件
+$obj= new sport_main($CONN,$smarty,$SiteData);
+
+//b.處理程序
+$obj->process();
+
+/*
+sport_main物件 class 應用說明
+用到的變數$_POST['form_act']的值為 add、update、Search處理程式新增、更新、搜尋
+'id','title','year','signtime','stoptime','work_start','work_end','memo'
+------------建表語法
+CREATE TABLE `{$this->TB}`( `id` INTEGER PRIMARY KEY,`title`,`year`,`signtime`,`stoptime`,`work_start`,`work_end`,`memo`);
+------------工具箱用
+id,title,year,signtime,stoptime,work_start,work_end,memo
+ID,名稱,日期,報名時間,結束報名,大會操作時間,大會結束時間,備註
+------------檢核用
+id,ID
+title,名稱
+year,日期
+signtime,報名時間
+stoptime,結束報名
+work_start,大會操作時間
+work_end,大會結束時間
+memo,備註
+
+*/
+
+class sport_main{
+	var $CONN;//PHP5的PDO物件
+	var $smarty;//smarty物件
+	var $SiteData;
+	//資料表欄位
+	var $fields=array('id','title','year','signtime','stoptime','work_start','work_end','memo');
+	var $tb=array('teach','stud','sport_var','sport_main','sport_item','sport_res','sport_login');
+	var $tb_memo=array('教師資料表','學生資料表','變數資料表','比賽名稱表','項目名稱表','報名成績表','登入記錄');
+	/* 1.建構函式 */
+	function __construct($CONN,$smarty,$SiteData){
+		$this->CONN=$CONN;
+		$this->smarty=$smarty;
+		$this->SiteData = $SiteData;
+	}
+
+	/* 2.初始化一些數值處理函式  */
+	function init() {
+	}
+
+
+	/* 3.物件流程函式  */
+	function process() {
+		//初始化一些數值
+		$this->init();
+
+		//擷取資料
+		$this->add();
+
+		//顯示畫面
+		// $this->display();
+	}
+	/* 4.顯示畫面處理函式*/
+	function display1(){
+	//echo head();
+	echo  "<meta charset='UTF-8'><br><br><CENTER>";
+	echo "<h4>--== 《系統訊息》 ==--</h4>";
+	echo "<div align=center style='font-size:12pt;color:#A52A2A;'><b>";
+		}
+	function display2($msg){
+		echo "<hr>".$msg."<BR>";
+	}
+
+	function display3(){
+	$this->finish();
+	echo "</b><BR></div><h5 onclick=\"location.href='main.php';\">--==  《按下後開始》 ==--</h5>";
+	exit;
+	}
+
+	/* 5.擷取資料給網頁呈現處理函式*/
+	function all(){
+		//先處理搜尋條件
+		$Search_syntax='';//$Search_syntax=$this->Search();
+
+		//先算總筆數
+		$SQL="SELECT * FROM sqlite_master WHERE  type = 'table'";
+		$rs=$this->CONN->query($SQL) or die($SQL);
+		// $this->tol=$rs->rowCount();
+		$arr=$rs->fetchAll();
+		//$this->all=$arr;
+		$A=array();
+		foreach ($arr as $ary){
+			$K=$ary['name'];
+			$SQL="select  count(*) from `{$K}` ";
+			$rs=$this->CONN->query($SQL) or die($SQL);
+			$tol=$rs->fetchColumn(); // $this->tol=$rs->rowCount();
+			$ary['tol']=$tol;
+			$A[$K]=$ary;
+		}
+		$this->all=$A;
+		
+		//echo '<pre>';print_r($A);
+	}
+
+	/* 6.新增處理函式 */
+	function add(){
+		$this->display1();
+		$arr=API_data();		
+		if(isset($arr->status)){
+			if($arr->status==403){
+				if( !isset( $_SESSION ) )  session_start();
+				$file_name1=$this->SiteData.$_SESSION['Auth']['code'].'_api.csv';                        
+				$file_name2=$this->SiteData.date("Y").'_school_data.txt';                     
+				if(file_exists($file_name1)) unlink($file_name1);			
+				if(file_exists($file_name2)) unlink($file_name2);			
+				
+				header("Location:install.php?error=403");				
+				exit();
+			}
+		}		
+		
+		//echo "<pre>";print_r($_POST);die();
+		/* 建立 stud 資料表*/
+		$SQL1="select * from `stud` limit 1";
+		$SQL2="CREATE TABLE `stud`( `id` INTEGER PRIMARY KEY,`stuid` TEXT NOT NULL UNIQUE,`stuname` TEXT NOT NULL,`idclass` TEXT NOT NULL,`cla` TEXT NOT NULL,`seatnum` INTEGER DEFAULT '0',`sex` TEXT NOT NULL,`edukey` TEXT,`created` TEXT ,`modify` TEXT )";
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) {
+			$rs=$this->CONN->query($SQL2);
+			//$arr=API_data();
+			$this->add_stud($arr);
+		}
+		$this->display2('stud 資料表--OK！');
+		/* 建立 teach 資料表*/
+
+		$SQL1="select * from `teach` limit 1";
+		$SQL2="CREATE TABLE `teach`( `id` INTEGER PRIMARY KEY,`tname` TEXT NOT NULL,`sex` TEXT,`office` TEXT,`title` TEXT,`user` TEXT,`pass` TEXT,`cla` TEXT,`prem` TEXT,`edukey` TEXT NOT NULL UNIQUE,`created` TEXT ,`modify` TEXT )";
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) {
+			$rs=$this->CONN->query($SQL2);
+			//$this->makeTB_teach();
+			//$arr=API_data();
+			$this->add_teach($arr);
+		}
+		$this->display2('teach 資料表--OK！');
+
+
+
+		/* 建立 sport_main 資料表*/
+		$SQL1="select * from `sport_main` limit 1";
+		//$SQL2="CREATE TABLE `sport_main`( `id` INTEGER PRIMARY KEY,`title`,`year`,`signtime`,`stoptime`,`work_start`,`work_end`,`memo`);";
+		$SQL2="CREATE TABLE `sport_main`( `id` INTEGER PRIMARY KEY,`title`,`year`,`sign`,`work`,`memo`);";
+		
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) $this->CONN->query($SQL2);
+		$this->display2('sport_main 資料表--OK！');
+		
+		/* 建立 sport_main 資料表*/
+		$SQL="select * from `sport_main` limit 1";
+		$rs=$this->CONN->query($SQL) or die($SQL);
+		$arr=$rs->fetchAll();
+		if (count($arr)==0) {
+			$Y=date("Y");
+			$Ym=date("Y-m-d");
+			$SQL="INSERT INTO `sport_main`(title , year , sign, work, memo)values ('$Y 年運動會' ,'{$Ym}' ,'Y' ,'Y' ,'' )";
+			$rs=$this->CONN->query($SQL) or die($SQL);
+			$this->display2('主項目資料加入--OK！');		
+		}
+
+
+		/* 建立 sport_item 資料表*/
+		$SQL1="select * from `sport_item` limit 1";
+		$SQL2="CREATE TABLE `sport_item`( `id` INTEGER PRIMARY KEY,`mid` INTEGER DEFAULT '0',`item` INTEGER DEFAULT '0',`enterclass`,`sportorder` INTEGER DEFAULT '0',`sportkind` INTEGER DEFAULT '0',`sunit`,`sord` INTEGER DEFAULT '0',`playera` INTEGER DEFAULT '0',`passera` INTEGER DEFAULT '0',`kgp` INTEGER DEFAULT '0',`kgm` INTEGER DEFAULT '0',`place`,`kind` INTEGER DEFAULT '0',`skind` INTEGER DEFAULT '0',`sporttime`,`overtime`,`imemo`,UNIQUE(mid,item,enterclass,kind));";
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) $this->CONN->query($SQL2);
+		$this->display2('sport_item 資料表--OK！');
+
+		
+		/* 建立 sport_res 資料表*/
+		$SQL1="select * from `sport_res` limit 1";
+		$SQL2="CREATE TABLE `sport_res`( `id` INTEGER PRIMARY KEY,`mid` INTEGER DEFAULT '0',`itemid` INTEGER DEFAULT '0',`kmaster` INTEGER DEFAULT '0',`kgp` INTEGER DEFAULT '0',`kend` INTEGER DEFAULT '0',`stud_id`,`sportkind`,`cname`,`idclass`,`sportnum`,`num` INTEGER DEFAULT '0',`results`,`sportorder` INTEGER DEFAULT '0',`memo`,`passOK` INTEGER DEFAULT '0',UNIQUE(mid,itemid,kgp,idclass));";
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) $this->CONN->query($SQL2);
+		$this->display2('sport_res 資料表--OK！');
+				
+		/* 建立 sport_login 資料表*/
+		/**
+		$SQL1="select * from `sport_login` limit 1";
+		$SQL2="CREATE TABLE `sport_login`( `id` INTEGER PRIMARY KEY,`title`,`iday`,`addr`,`info`);";
+		$rs=$this->CONN->query($SQL1);
+		if (!$rs) $this->CONN->query($SQL2);
+		$this->display2('sport_login 資料表--OK！');
+		 */
+
+		$this->display3();
+		//最後一筆新增的編號
+		//$Insert_ID= $this->CONN->lastInsertId();
+//		$URL=$_SERVER['SCRIPT_NAME']."?page=".$this->page;
+//		$URL='main.php';
+//		Header("Location:$URL");
+	}
+
+
+/*加入學生資料*/
+function add_stud($arr){
+	if (!isset($arr->學期編班)) return ;
+	foreach($arr->學期編班 as $obj){
+	/* 判斷有沒有學生 */
+	if (isset($obj->學期編班)) {
+		//echo $obj->年級.'-'.$obj->班序.'人數'.count($obj->學期編班).'<br>';
+		foreach($obj->學期編班 as $ary){
+			$created=date("Y-d-m H:i:s");
+			$stuid=$ary->學號;
+			$seatnum=$ary->座號;
+			$stuname=$ary->姓名;
+			$sex=$ary->性別;
+			$edukey=$ary->身分證編碼;
+			$cla=$obj->年級.'_'.$obj->班序;
+			$idclass=$obj->年級.sprintf("%02d",$obj->班序).sprintf("%02d",$ary->座號);
+			$SQL="INSERT INTO `stud`(stuid , stuname , idclass , cla , seatnum , sex , edukey , created)values ('{$stuid}' ,'{$stuname}' ,'{$idclass}' ,'{$cla}' ,'{$seatnum}' ,'{$sex}' ,'{$edukey}' ,'{$created}')";
+			//echo $SQL."<br>";
+			$rs=$this->CONN->query($SQL);// or die($SQL);
+			}
+		}
+	}
+}
+
+/*加入教師資料表*/
+function add_teach($arr){
+	global $Admin;
+	if (!isset($arr->學期編班)) return ;
+	$created=date("Y-m-d H:i:s");
+	foreach($arr->學期編班 as $obj){
+	/* 判斷有沒有導師 */
+	if (isset($obj->導師)) {
+		$cla=$obj->年級.'_'.$obj->班序;
+		$N=count($obj->導師);
+		for($i=0;$i<$N;$i++){
+			$name=$obj->導師[$i]->姓名;
+			$edukey=$obj->導師[$i]->身分證編碼;
+			// echo $A.'班 '.$obj->導師[$i]->姓名.$obj->導師[$i]->身分證編碼.'<br>';
+			$SQL="INSERT INTO `teach`(tname,cla, edukey , created)values ('{$name}' ,'{$cla}' ,'{$edukey}' ,'{$created}')";
+			//echo $SQL."<br>";
+			$rs=$this->CONN->query($SQL);// or die($SQL);
+			}
+		}
+	}
+	/*加入其他老師*/
+	if (isset($arr->學期教職員)) {
+		$created=date("Y-m-d H:i:s");
+		foreach ($arr->學期教職員 as $ob){
+			$office=$ob->處室;
+			$title=$ob->職稱;
+			$tname=$ob->姓名;
+			$user=$ob->帳號;
+			$sex=$ob->性別;
+			$edukey=$ob->身分證編碼;
+			
+			$SQL1="INSERT INTO `teach`(tname , sex , office , title , user, edukey , created)values ('{$tname}' ,'{$sex}' ,'{$office}' ,'{$title}' ,'{$user}' ,'{$edukey}' ,'{$created}')";
+			$SQL2="update `teach`  set sex='{$sex}' ,office='{$office}' ,title='{$title}' ,user='{$user}' , modify='{$created}'  where edukey='{$edukey}' ";
+			
+			$rs=$this->CONN->query($SQL1);
+			if (!$rs) $this->CONN->query($SQL2);
+			$_SESSION['Auth']['prem'] = "All";
+		}
+	}
+
+		//A報名操作,B檢錄工作,C成績輸入,D項目管理,E帳號管理,F系統設定,All全部權限	
+		$SQL="update `teach`  set prem='All' where edukey='{$Admin['edu_key']}' ";
+		$rs=$this->CONN->query($SQL) or die($SQL);				
+		$this->display2("最高權限 {$_SESSION['Auth']['name']} 已設定--OK！");
+		
+
+
+
+	}
+
+	function finish(){
+		$file_name=$_SESSION['Auth']['code'].'_ok.text';            
+        $file = fopen($this->SiteData.$file_name, "w");
+        $fileSize = fputs( $file, 'install ok');
+        fclose($file);
+	}
+
+
+
+
+//end class
+}
+
+
+
+

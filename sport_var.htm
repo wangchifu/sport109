@@ -1,0 +1,89 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>系統選項管理</b></TD></TR>
+<TR><TD align=right>{{$this->links->show_page()}}</TD></TR>
+</TABLE>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD><b>流水號id</b></TD>
+<TD><b>變數名稱iKey</b></TD>
+<TD><b>說明memo</b></TD>
+<TD><b>資料值data</b></TD>
+<TD>編修/<a href='{{$smarty.server.PHP_SELF}}?act=add_form'>新增</a></TD></TR>
+{{if $smarty.get.act=='add_form'}}
+<!-- 新增表單   ---開始-->
+<tr align=center><td colspan=5>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}' Name='f1' enctype='multipart/form-data'>
+<table>
+<TR><TD>流水號</TD><TD><INPUT TYPE='text' NAME='id' value='' size=20 readonly></TD></TR>
+<TR><TD>變數名稱</TD><TD><INPUT TYPE='text' NAME='iKey' value='' size=20></TD></TR>
+<TR><TD>說明</TD><TD><INPUT TYPE='text' NAME='memo' value='' size=20></TD></TR>
+<TR><TD>資料值</TD><TD>
+<textarea name="data" rows="6" cols="20"></textarea>
+</TD></TR>
+<TR><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='add';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 新增表單   ---結束-->
+{{else}}
+{{foreach from=$this->all item=arr}}
+{{if $smarty.get.edit==$arr.id}}
+<!-- 編修表單   ---開始-->
+<tr align=center><td colspan='5'>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>流水號</TD><TD>{{$arr.id|strip_tags}}<INPUT TYPE='hidden' NAME='id' value='{{$arr.id|strip_tags}}'></TD></TR>
+<TR><TD>變數名稱</TD><TD><INPUT TYPE='text' NAME='iKey' value='{{$arr.iKey}}' size=20></TD></TR>
+<TR><TD>說明</TD><TD><INPUT TYPE='text' NAME='memo' value='{{$arr.memo}}' size=20></TD></TR>
+<TR><TD>資料值</TD><TD>
+<textarea name="data" rows="6" cols="20">{{$arr.data}}</textarea>
+</TD></TR>
+<tr><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 編修表單結束 -->
+
+<!-- 流覽資料  -->
+{{else}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr.id|strip_tags}}</TD>
+<TD>{{$arr.iKey}}</TD>
+<TD>{{$arr.memo}}</TD>
+<TD>{{$arr.data}}</TD>
+<td><a href='{{$smarty.server.PHP_SELF}}?edit={{$arr.id}}&page={{$this->page}}'>修改</a>
+<a href='#'  onclick="if( window.confirm('所有資料都會刪除喔？確定？')){d1.id.value='{{$arr.id}}';d1.form_act.value='del';d1.submit();}">刪除</a>
+</td></tr>
+{{/if}}
+{{/foreach}}
+{{/if}}
+<TR><TD colspan=5 align=center>
+<INPUT TYPE='button' value='X刪除資料表' onclick="if( window.confirm('所有資料都會刪除喔？確定？')){d1.form_act.value='delF';d1.submit();}" style='color:red;' >
+<INPUT TYPE='button' value='A加入預設值' onclick="if( window.confirm('加入預設值？確定？')){d1.form_act.value='add_def';d1.submit();}" style='color:blue;' >
+</TD></TR>
+</table>
+
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='d1'>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='id'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+</FORM>
+{{include file=$this->pagefoot}}

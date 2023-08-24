@@ -1,0 +1,159 @@
+
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<body>
+<TABLE width='800'  border='0' align='center'>
+<TR style='font-size:12pt;color:blue;'><TD align=left>
+
+<a href='sport_item_all_A.php'>◎檢錄列表</a>
+{{$this->ItemLink()}}
+</TD></TR>
+</TABLE>
+
+
+
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#FFFFFF'>
+<TD width=50%><b>己報名學生</b></TD>
+<TD width=50%><b>組別安排</b>
+
+</TD>
+</TR>
+<TR align=center  style='font-size:12pt;color:blue;' bgcolor='#ADD8E6'>
+<TD width=50% align=left>【項目資訊】
+{{$this->item}}.{{$this->Im.A}}--
+每組{{$this->Im.C.playera}}人，取{{$this->Im.C.passera}}人。
+
+</TD><TD width=50%>
+共報名{{$this->tol}}人，每組{{$this->Im.C.playera}}人，
+可分 {{ceil($this->tol/$this->Im.C.playera)}} 組。
+</TD>
+</TR>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='f1' >
+<tr align=left bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD valign=top>
+
+<INPUT TYPE='reset' Value='重新設定' class='bt1'>
+<INPUT TYPE='button' class='bt1' value='○填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='updateA';this.form.submit()}">
+<INPUT TYPE='button' class='bt1' value='取消返回' onclick="history.back();">
+
+<br>
+<br>
+<INPUT TYPE='button' class='bt1' value='A依班級順序寫入' onclick="showA();">
+<INPUT TYPE='button' class='bt1' value='B自動亂數寫入' onclick="showB('upStu',{{$this->tol}});">
+<INPUT TYPE='hidden' Name='tol'  value='{{$this->tol}}'>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='id'  value=''>
+<INPUT TYPE='hidden' Name='GP'  value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<input type='hidden' name='item' value='{{$this->item}}'>
+<div>
+{{if $this->Im.C.sportkind=='5'}}
+
+{{else}}
+
+{{/if}}
+
+{{if $this->Im.C.sportkind=='5'}}
+{{$this->myBoxK5a('upStu',$this->all.A,2)}}
+{{elseif  $this->Im.C.sportkind=='1'}}
+{{$this->myBox1a('upStu',$this->all.A,2)}}
+{{elseif  $this->Im.C.sportkind=='2'}}
+{{$this->myBox1a('upStu',$this->all.A,2)}}
+{{/if}}
+
+
+</div>
+</TD><TD valign=top>
+<INPUT TYPE='button' class='bt1' value='X刪除重排' onclick="if( window.confirm('確定要全部重排嗎？確定？')){this.form.form_act.value='delAll';this.form.submit()}">
+<INPUT TYPE='button' class='bt1' value='○改好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='updateB';this.form.submit()}">
+<INPUT TYPE='button' class='bt1' value='取消返回' onclick="history.back();"><br><br>
+<INPUT TYPE='button' class='bt1' value='跳遠L檢錄單' onclick="if( window.confirm('確定列印？確定？')){this.form.form_act.value='printA2L';this.form.submit()}">
+<INPUT TYPE='button' class='bt1' value='跳高H檢錄單' onclick="if( window.confirm('確定列印？確定？')){this.form.form_act.value='printA2H';this.form.submit()}">
+<br><div>
+{{if $this->Im.C.sportkind=='5'}}
+{{$this->myBoxK5b('upHand',$this->all.B,$this->Im.C.playera)}}
+{{elseif  $this->Im.C.sportkind=='1'}}
+{{$this->myBox1b('upHand',$this->all.B,$this->Im.C.playera)}}
+{{elseif  $this->Im.C.sportkind=='2'}}
+{{$this->myBox2b('upHand',$this->all.B,$this->Im.C.playera)}}
+{{/if}}
+</div>
+</TD>
+</tr>
+</FORM>
+</table>
+<Script LANGUAGE='JavaScript' TYPE='text/javascript'>
+ function showH(id) {
+	var X = document.getElementById(id);
+	if (X.style.display=='none'){X.style.display='';}
+	else{X.style.display='none';}
+ }
+function showA() {
+	var i =0;
+	var x =1;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	//alert(objx);
+	if (objx.substr(0,5)=='upStu') {
+		document.f1.elements[i].value=x;
+		x++;
+		}
+	i++;
+	}
+}
+
+function showB(Na,N) {
+	var foo = [];
+	for (var i = 1; i <= N; i++) {foo.push(i);}
+	//var foo = new Array(1, N); 
+	//shuffle(foo);
+	shuffle(foo);
+	//alert(foo);
+	var i =0;
+	var x =0;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	//alert(objx);
+	if (objx.substr(0,5)==Na) {
+		document.f1.elements[i].value=foo[x];
+		x++;
+		}
+	i++;
+	}
+	
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function fillall(name,value) {
+	var i =0;
+	var A=name.length;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	if (objx.substr(0,A)==name) {
+		//document.f1.elements[i].value=value;
+		obj.value=value;
+		}
+	i++;
+	}
+}
+
+	//one line solution
+	// shuffle = (array) => array.sort(() => Math.random() - 0.5);
+	//Demo
+	//	let arr = [1, 2, 3];
+	//	shuffle(arr);
+	//	alert(arr);	
+	
+</script>
+
+{{include file=$this->pagefoot}}

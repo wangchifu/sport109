@@ -1,0 +1,152 @@
+
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<body>
+<TABLE width='800'  border='0' align='center'>
+<TR style='font-size:12pt;color:blue;'><TD align=left>
+<a href='sport_item_all_A.php'>◎檢錄列表</a>
+{{$this->ItemLink()}}
+
+</TD></TR>
+</TABLE>
+
+
+
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#FFFFFF'>
+<TD width=33%>
+<b>成績/名次登錄</b></TD>
+<TD width=33%><b>成績排序</b></TD>
+<TD width=34%><b>組別安排</b></TD>
+</TR>
+<TR align=center  style='font-size:12pt;color:blue;' bgcolor='#ADD8E6'>
+<TD align=left colspan=2>【項目資訊】
+{{$this->item}}.{{$this->Im.A}}--每組{{$this->Im.C.playera}}人，取{{$this->Im.C.passera}}人。
+<br>共報名{{$this->tol}}人，每組{{$this->Im.C.playera}}人，
+可分 {{ceil($this->tol/$this->Im.C.playera)}} 組。
+</TD>
+<TD align=left>
+{{if $this->Im.Next!=''}}
+{{$this->Im2.C.id}}.{{$this->Im2.A}}<br>
+每組{{$this->Im2.C.playera}}人，取{{$this->Im2.C.passera}}人。
+{{/if}}
+</TD>
+</TR>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='f1' >
+<tr align=left bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD valign=top>
+<INPUT TYPE='reset' Value='重新設定' class='bt1'>
+<INPUT TYPE='button' class='bt1' value='X成績歸零' onclick="if( window.confirm('確定將成績歸零嗎？確定？')){this.form.form_act.value='delAll';this.form.submit()}">
+<INPUT TYPE='button' class='bt1' value='○填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+
+<INPUT TYPE='button' class='bt1' value='取消返回' onclick="history.back();">
+<br>
+<br>
+<br>
+
+<INPUT TYPE='hidden' Name='tol'  value='{{$this->tol}}'>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='sportkind'  value='{{$this->Im.C.sportkind}}'>
+
+<input type='hidden' name='token' value='{{$this->token}}'>
+<input type='hidden' name='item' value='{{$this->item}}'>
+<input type='hidden' name='Nitem' value='{{$this->Im.Next}}'>
+(成績 名次)
+<div  style='font-size:12pt;'>
+{{$this->myBoxT('upStu',$this->all,$this->Im.C.playera)}}
+</div>
+
+
+</TD><TD valign=top>
+{{if $this->Im.Next!=''}}
+<INPUT TYPE='button' class='bt1' value='○將鉤選者晉級並自動排道次' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='addNext';this.form.submit()}">
+{{/if}}
+<br><br><br>
+格式:(組別)班級座號姓名成績
+<div style='font-size:12pt;'>
+{{$this->myBoxAdd('addStu',$this->Im.C.playera)}}
+</div>
+</TD><TD valign=top>
+<div style='font-size:12pt;'>
+{{$this->myBox3('upStu2',$this->Next,$this->Im.C.playera)}}
+</div>
+</TD>
+
+
+</tr>
+</FORM>
+</table>
+<Script LANGUAGE='JavaScript' TYPE='text/javascript'>
+ function showH(id) {
+	var X = document.getElementById(id);
+	if (X.style.display=='none'){X.style.display='';}
+	else{X.style.display='none';}
+ }
+function showA() {
+	var i =0;
+	var x =1;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	//alert(objx);
+	if (objx.substr(0,5)=='upStu') {
+		document.f1.elements[i].value=x;
+		x++;
+		}
+	i++;
+	}
+}
+
+function showB(Na,N) {
+	var foo = [];
+	for (var i = 1; i <= N; i++) {foo.push(i);}
+	//var foo = new Array(1, N); 
+	//shuffle(foo);
+	shuffle(foo);
+	//alert(foo);
+	var i =0;
+	var x =0;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	//alert(objx);
+	if (objx.substr(0,5)==Na) {
+		document.f1.elements[i].value=foo[x];
+		x++;
+		}
+	i++;
+	}
+	
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function fillall(name,value) {
+	var i =0;
+	var A=name.length;
+	while (i < document.f1.elements.length) {
+	var obj=f1.elements[i];//取得名稱
+	var objx=f1.elements[i].name;//取得名稱
+	if (objx.substr(0,A)==name) {
+		//document.f1.elements[i].value=value;
+		obj.value=value;
+		}
+	i++;
+	}
+}
+
+	//one line solution
+	// shuffle = (array) => array.sort(() => Math.random() - 0.5);
+	//Demo
+	//	let arr = [1, 2, 3];
+	//	shuffle(arr);
+	//	alert(arr);	
+	
+</script>
+
+{{include file=$this->pagefoot}}

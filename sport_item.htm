@@ -1,0 +1,155 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<TABLE width='900'  border='0' align='center'>
+<TR><TD align=center><b>比賽項目管理</b></TD></TR>
+<TR><TD align=right>{{$this->links->show_page()}}</TD></TR>
+</TABLE>
+<table  width='900'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:10pt' bgcolor='#E5E5E5'>
+<TD width=5%><b>主項<br>ID</b></TD>
+<TD width=20%><b>組別項目名稱(報名數)</b></TD>
+<TD width=5%><b>順序</b></TD>
+<TD width=10%><b>類別<br>sportkind</b></TD>
+<TD><b>計分<br>方式</b></TD>
+<TD width=20%>
+<b>每組人數,錄取數</b><br>
+可報組數,每組人數
+</TD>
+<TD><b>地點</b></TD>
+<TD width=6%><b>相關<br>skind</b></TD>
+<TD width=15%><b>比賽日期時間<br>計分格式額外說明</b></TD>
+<TD width=10%>編修/<a href='{{$smarty.server.PHP_SELF}}?act=add_form'>新增</a></TD></TR>
+{{if $smarty.get.act=='add_form' }}
+<!-- 新增表單   ---開始-->
+<tr align=center><td colspan=10>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}' Name='f1'>
+{{include file='sport_item_add.htm'}}
+</FORM>
+</td></tr>
+<!-- 新增表單   ---結束-->
+{{else}}
+{{foreach from=$this->all item=arr}}
+{{if $smarty.get.edit==$arr.id}}
+<!-- 編修表單   ---開始-->
+<tr align=center><td colspan='10'>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>ID</TD><TD>
+<b>{{$arr.id}}</b>
+<INPUT TYPE='hidden' NAME='id' value='{{$arr.id}}'></TD></TR>
+<TR><TD>主項</TD><TD>
+<b>{{$arr.mid}}</b>
+<INPUT TYPE='hidden' NAME='mid' value='{{$arr.mid}}'></TD></TR>
+<TR><TD>1.類別</TD><TD>
+<select name='sportkind' >
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Options.sportkind selected=$arr.sportkind}}
+</select>
+</TD></TR>
+
+<TR><TD>2.組別</TD><TD>
+<select name='enterclass' >
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Options.sportclass selected=$arr.enterclass}}
+</select>
+</TD></TR>
+<TR><TD>3.項目名稱</TD><TD>
+<select name='item'>
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Options.sportname selected=$arr.item}}
+</select>
+</TD></TR>
+
+
+<TR><TD>4.類別</TD><TD>
+<select name="kind">
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Options.sportkind3 selected=$arr.kind}}
+</select>
+</TD></TR>
+<TR><TD>5.相關(子)類別</TD><TD><INPUT TYPE='text' NAME='skind' value='{{$arr.skind}}' size=3>(系統不熟悉者,此項勿任意變更)</TD></TR>
+<TR><TD>6.出賽順序</TD><TD><INPUT TYPE='text' NAME='sportorder' value='{{$arr.sportorder|strip_tags}}' size=20></TD></TR>
+
+<TR><TD>7.計分格式</TD><TD><INPUT TYPE='text' NAME='sunit' value='{{$arr.sunit|strip_tags}}' size=20></TD></TR>
+<TR><TD>8.計分方式</TD><TD>
+<select name="sord">
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Sord selected=$arr.sord}}
+</select>
+</TD></TR>
+<TR><TD>9.每組/錄取</TD>
+<TD>每組<INPUT TYPE='text' NAME='playera' value='{{$arr.playera}}' size=2>人，
+錄取<INPUT TYPE='text' NAME='passera' value='{{$arr.passera}}' size=2>人。</TD></TR>
+<TR><TD>10.接力類項目<br> (限接力類)</TD><TD style='color:blue;'>
+每班可報<INPUT TYPE='text' NAME='kgp' value='{{$arr.kgp}}' size=2>組，
+每組<INPUT TYPE='text' NAME='kgm' value='{{$arr.kgm}}' size=2>人。<br>
+
+</TD></TR>
+<TR><TD>11.地點</TD><TD><INPUT TYPE='text' NAME='place' value='{{$arr.place|strip_tags}}' size=20></TD></TR>
+<TR><TD>12.比賽日期</TD><TD>
+<input type="date" id="bookdate" placeholder="2014-09-18" name="sporttime"  value='{{$arr.sporttime}}'>
+</TD></TR>
+<TR><TD>13.比賽時間</TD><TD>
+<input type="time" id="bookdate" placeholder="08:30" name="overtime" value='{{$arr.overtime}}'>
+時:分(用方向鍵選擇)&nbsp;&nbsp;
+</TD></TR>
+<TR><TD>14.額外說明</TD><TD><INPUT TYPE='text' NAME='imemo' value='{{$arr.imemo|strip_tags}}' size=20></TD></TR>
+
+<tr><td colspan=2 align=center><br>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 編修表單結束 -->
+
+<!-- 流覽資料  -->
+{{else}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr.mid}}.{{$arr.id}}</TD>
+<TD align=left style="color:{{if $arr.skind==0}}blue{{else}}red{{/if}}">
+{{$this->Options.sportclass[$arr.enterclass]}}
+{{$this->Options.sportname[$arr.item]}}{{$this->itemkind[$arr.kind]}}</TD>
+<TD>{{$arr.sportorder}}</TD>
+<TD>{{$arr.sportkind}}.{{$this->sportkind_name[$arr.sportkind]}}</TD>
+<TD>{{$arr.sord}}</TD>
+<TD align=left>{{if $arr.sportkind=='5'}}
+<b>{{$arr.playera}}</b>隊;取<b>{{$arr.passera}}</b>名;
+可報<b>{{$arr.kgp}}</b>組;每組<b>{{$arr.kgm}}</b>人
+{{else}}
+每組<b>{{$arr.playera}}</b>人;取<b>{{$arr.passera|strip_tags}}</b>名。
+{{/if}}
+</TD>
+<TD>{{$arr.place|strip_tags}}</TD>
+<TD>{{$arr.skind|strip_tags}}</TD>
+<TD align=left onclick="showH('v{{$arr.id}}')">
+<div id="v{{$arr.id}}" style="display:none;">{{$arr.sporttime}} {{$arr.overtime|strip_tags}}<BR>
+{{$arr.sunit|strip_tags}} {{$arr.imemo|strip_tags}}</div>
+</TD>
+<td><a href='{{$smarty.server.SCRIPT_NAME}}?edit={{$arr.id}}&page={{$this->page}}'>修改</a>
+<a href='#' onclick="if (window.confirm('真的刪除嗎？')){d1.id.value='{{$arr.id}}';d1.form_act.value='del';d1.submit()}">刪除</a>
+</td></tr>
+{{/if}}
+{{/foreach}}
+{{/if}}
+</table>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}'  Name='d1'>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='id'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+</FORM>
+
+<Script LANGUAGE='JavaScript' TYPE='text/javascript'>
+ function showH(id) {
+	var X = document.getElementById(id);
+	if (X.style.display=='none'){X.style.display='';}
+	else{X.style.display='none';}
+ }
+</script>
+{{include file=$this->pagefoot}}

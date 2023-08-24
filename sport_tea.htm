@@ -1,0 +1,92 @@
+<html><head>
+<meta http-equiv='CONTENT-TYPE' content='text/html; charset=UTF-8'>
+<title>成績記錄表</title>
+<meta name='generator' content='Script By 二林網管程式產生器'>
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+function Mover(obj) {obj.style.backgroundColor='#E6E6FA';}
+function Mout(obj) { obj.style.backgroundColor='#FFFFFF';}
+function tagall() {
+var i =0;
+while (i < document.f1.elements.length) {
+var obj=document.f1.elements[i];
+var objx=document.f1.elements[i].name;//取得名稱
+// objx.substr(0,4)取得部分字串
+if (obj.type=='checkbox' && objx.substr(0,6)=='delStu') {
+if (obj.checked==1 ) {obj.checked=0;}
+else { obj.checked=1;}
+}
+i++;
+}
+}
+</script>
+<style>
+<!--您的CSS樣式表-->
+A:link{text-decoration:none;color:blue; }
+A:visited{text-decoration:none;color:blue; }
+A:hover{text-decoration: none;color:red;}
+</style>
+</head>
+<!--{include file=$this->pagehead}載入表頭-->
+<body>
+{{include file='menu.php'}}
+<div align=center><b>{{$this->midAry.title}}.{{$this->nowClass}}班-A.報名管理</b></div>
+<table  width='900'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}' Name='f1'>
+<TR>
+<TD align=center width=50%><b>應報名的組別項目</b></TD>
+<TD align=center width=50%><b>{{$this->nowClass}}班學生</b>
+※<a href='sport_tea_N.php'>B.比賽編號管理</a>
+</TD>
+</TR>
+{{assign var="No" value='1'}}{{assign var="No" value=$No+1}}
+<TR bgcolor='#FFFFFF'>
+<TD align=left style='font-size:11pt' valign=top>
+<label style='font-weight:bold;'><INPUT TYPE='radio' NAME='item' value='all'>隊長：</label>
+<div style='margin-left:20pt;'>{{$this->myBox2('delStu',$this->AddStu[0],4)}}</div>
+{{foreach from=$this->Item item=arr}}
+{{assign var="K" value=$arr.id}}
+{{if $arr.sportkind=='5'}}
+<label  style='font-weight:bold;'><INPUT TYPE='radio' NAME='item' value='{{$arr.id}}_{{$arr.sportkind}}'>
+{{$arr.id}}.{{$this->AIm.$K.A}}({{$this->AIm.$K.A2}})
+</label>
+{{else}}
+<label style='font-weight:bold;'><INPUT TYPE='radio' NAME='item' value='{{$arr.id}}_{{$arr.sportkind}}'>
+{{$arr.id}}.{{$this->Options.sportclass[$arr.enterclass]}}{{$this->Options.sportname[$arr.item]}}{{$this->itemkind[$arr.kind]}}</label>
+{{/if}}
+<div style='margin-left:20pt;'>
+{{$this->myBox2('delStu',$this->AddStu[$arr.id],4)}}
+</div>
+{{/foreach}}
+</td>
+<TD valign=top align=left style='font-size:10pt'>
+{{$this->myBox('stu',$this->Stu,5)}}
+<hr>
+{{foreach from=$this->okStu item=arr}}
+{{if $arr.itemid=='0'}}
+{{$arr.idclass}}.{{$arr.cname}} ({{$arr.itemid}}.隊長)<br>
+{{else}}
+{{$arr.idclass}}.{{$arr.cname}} ({{$arr.itemid}}.{{$this->AIm[$arr.itemid].A}}) <br>
+{{/if}}
+{{/foreach}} 
+</TD>
+</TR>
+
+<TR bgcolor='#FFFFFF' align=center>
+<TD colspan=2>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='hidden' Name='cla' Value='{{$this->nowClass}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='button' value='已報名全選' onclick="tagall()">
+<INPUT  style='color:red;' TYPE='button' value='X移除報名學生' onclick="if( window.confirm('確定移除？確定？')){this.form.form_act.value='del';this.form.submit()}">
+
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='←加入所選的組別' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='add';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</TD>
+</TR>
+</FORM>
+</TABLE>
+
+	
+{{include file=$this->pagefoot}}

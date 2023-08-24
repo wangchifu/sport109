@@ -1,0 +1,38 @@
+{{include file=$this->pagehead}}
+<center style='font-size:10pt;'><img src='img/109.0209.jpg'><br>
+
+<form action='{{$smarty.server.SCRIPT_NAME}}' method='post' name='f1' autocomplete='off'>
+<table width="800" align="center">
+<tr class="style8"><td width=35% align=center>
+<a href="https://gsuite.chc.edu.tw" target="_blank"><img src="img/gsuite_logo.png"></a>
+</td><td width=65%> </td></tr>
+
+<tr class="style8"><td width=35% align=center><font color="#FF0000">*</font>帳號:</td><td width=65%><input type='text' name='user' value='' autofocus size=10 placeholder="教育處 Gsuite 帳號">@chc.edu.tw</td></tr>
+
+<tr class="style8"><td align=center><font color="#FF0000">*</font>密碼:</td><td>
+<input type='password' name='pass' value='' size=16 placeholder="學籍系統/OpenID 密碼"></td></tr>
+
+<tr class="style8"><td align=center><font color="#FF0000">*</font>驗證碼:</td><td>
+<img src="pass_img.php" border="0" name="pimg" onclick="this.src='pass_img.php?'+ Math.random();">
+<input type=text name="CHK"  size=6  value='' class=tbox><br>
+<label><input type="radio" name="kind" value="G" checked>GSuite登入</label>
+</td></tr>
+<tr><td colspan=2 align=center>
+<input type='hidden' name='form_act' value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='button'  class="button" value='-=系統登入=-' onclick="if( window.confirm('確定登入？確定？')){f1_sumit();}" style='font-size:20px;background-color:#FFFFFF;border:2px #003C9D solid;'>
+</td></tr></table>
+</form>
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+function f1_sumit() {
+	var U=f1.user.value;
+	var P=f1.pass.value;
+	var C=f1.CHK.value;
+	if ( U=='' || P=='' || C=='') {alert('請輸入帳號密碼！');return ;}
+	f1.form_act.value='login';
+	f1.submit();
+	}
+
+</script>
+
+{{include file=$this->pagefoot}}

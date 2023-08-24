@@ -1,0 +1,91 @@
+<html><head>
+<meta http-equiv='CONTENT-TYPE' content='text/html; charset=UTF-8'>
+<title>成績記錄表</title>
+<meta name='generator' content='Script By 二林網管程式產生器'>
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+function Mover(obj) {obj.style.backgroundColor='#E6E6FA';}
+function Mout(obj) { obj.style.backgroundColor='#FFFFFF';}
+function tagall() {
+var i =0;
+while (i < document.f1.elements.length) {
+var obj=document.f1.elements[i];
+var objx=document.f1.elements[i].name;//取得名稱
+// objx.substr(0,4)取得部分字串
+if (obj.type=='checkbox' && objx.substr(0,6)=='delStu') {
+if (obj.checked==1 ) {obj.checked=0;}
+else { obj.checked=1;}
+}
+i++;
+}
+}
+</script>
+<style>
+<!--您的CSS樣式表-->
+A:link{text-decoration:none;color:blue; }
+A:visited{text-decoration:none;color:blue; }
+A:hover{text-decoration: none;color:red;}
+</style>
+</head>
+<!--{include file=$this->pagehead}載入表頭-->
+<body>
+{{include file='menu.php'}}
+<div align=center><b>{{$this->midAry.title}}.
+{{$this->nowClass}}班 - B.比賽編號管理</b></div>
+<table  width='900'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='f1'>
+<TR style='color:#A52A2A;font-size:12pt;'>
+<TD align=left width=45%><b>❶填寫{{$this->nowClass}}班學生運動員編號</b></TD>
+<TD align=left width=55%><b>❷{{$this->nowClass}}班.接力棒次安排</b>
+<select  style='color:blue;' onChange="location.href='{{$smarty.server.SCRIPT_NAME}}?nClass='+this.options[this.selectedIndex].value;">
+<option value="">---請選擇---</option>
+{{html_options options=$this->Options.classA selected=$this->nowClass}}
+</select>
+※<a href='sport_ad_tea.php?nClass={{$this->nowClass}}'>A.比賽報名管理</a>
+</TD>
+</TR>
+
+{{assign var="No" value='1'}}{{assign var="No" value=$No+1}}
+<TR bgcolor='#FFFFFF'>
+<TD align=left style='font-size:11pt' valign=top>
+{{if $this->nowClass!=''}}
+<div>{{$this->myBox1a('upNum',$this->AddStu,2)}}</div>
+{{/if}}
+
+</td>
+<TD align=left style='font-size:10pt' valign=top>
+※填寫格式：<b style='color:red;'>1-3</b>:表示第1組第3棒。<br>無特別情況時，均為第1組。
+</div>
+<hr color=red>
+{{foreach from=$this->Item item=arr}}
+<label  style='font-weight:bold;'>◎
+{{$arr.id}}.{{$this->Options.sportclass[$arr.enterclass]}}{{$this->Options.sportname[$arr.item]}}{{$this->itemkind[$arr.kind]}}
+(每組{{$arr.kgm}}人，可報{{$arr.kgp}}組。)
+</label>
+<div style='margin-left:20pt;'>
+{{$this->myBox5('upOrd',$this->Stu5[$arr.id],2)}}
+</div>
+{{/foreach}}
+</TD>
+</TR>
+
+<TR bgcolor='#FFFFFF' align=center>
+<TD colspan=2>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='hidden' Name='cla' Value='{{$this->nowClass}}'>
+<INPUT TYPE='hidden' Name='nClass' Value='{{$this->nowClass}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT  style='color:red;' TYPE='button' value='W寫入運動員編號' onclick="if( window.confirm('確定寫入？確定？')){this.form.form_act.value='updateA';this.form.submit();}">
+<INPUT  style='color:red;' TYPE='button' value='O寫入道次安排' onclick="if( window.confirm('確定寫入道次安排？填寫格式是否正確？')){this.form.form_act.value='updateB';this.form.submit();}">
+
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</TD>
+</TR>
+</FORM>
+</TABLE>
+
+<INPUT TYPE=hidden  value='本班要參加第1 組' onclick="if(window.confirm('確定參加？')){location='/sfs3/modules/elps_sport/mgr_stu.php?
+mid=15&sclass=508&act=K5&GP=1&item=1338' ;}" class=bur>
+
+{{include file=$this->pagefoot}}

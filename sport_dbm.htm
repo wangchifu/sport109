@@ -1,0 +1,35 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>資料表管理</b></TD></TR>
+</TABLE>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='f1'>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD width=10%><b>name</b></TD>
+<TD width=10%><b>名稱</b></TD>
+<TD width=6%><b>rootpage</b></TD>
+<TD width=6%><b>資料筆數</b></TD>
+<TD width=10%>編修</TD>
+<TD width=60%><b>sql /<a href='#' onclick="if (window.confirm('真的新增嗎？')){f1.form_act.value='add';f1.submit()}">建立預設資料表</a></b></TD>
+</TR>
+{{foreach from=$this->tb item=arr key=K}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr}}</TD>
+<TD>{{$this->tb_memo.$K}}</TD>
+<TD>{{$this->all.$arr.rootpage}}</TD>
+<TD>{{$this->all.$arr.tol}}</TD>
+<td>
+<a href='#' onclick="if (window.confirm('真的刪除嗎？')){f1.TB.value='{{$arr}}';f1.form_act.value='del';f1.submit()}">刪除</a>
+</td>
+<TD align=left>{{$this->all.$arr.sql|strip_tags}}</TD>
+</tr>
+{{/foreach}}
+</table>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='TB'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+</FORM>
+
+{{include file=$this->pagefoot}}

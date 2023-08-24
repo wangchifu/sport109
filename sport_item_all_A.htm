@@ -1,0 +1,47 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>比賽項目報名統計</b></TD></TR>
+</TABLE>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD width=6%><b>主項ID</b></TD>
+<TD width=20%><b>組別項目名稱</b></TD>
+<TD width=5%><b>報名</b></TD>
+<TD width=4%><b>編號</b></TD>
+<TD width=4%><b>檢錄</b></TD>
+<TD width=4%><b>成績</b></TD>
+<TD width=12%><b>類別<br>sportkind</b></TD>
+<TD width=20%><b>初賽每組人數,錄取人數<br>(接力:可報組數/每組人數)</b></TD>
+<TD width=4%><b>相關<br>skind</b></TD>
+
+</TR>
+{{foreach from=$this->all item=arr}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover2(this)" onmouseout="Mout(this)">
+<TD>{{$arr.mid}}.{{$arr.id}}</TD>
+<TD align=left style="color:{{if $arr.skind==0}}blue{{else}}red{{/if}}">
+<a href='sp_orderA.php?item={{$arr.id}}'>{{$this->Options.sportclass[$arr.enterclass]}}
+{{$this->Options.sportname[$arr.item]}}{{$this->itemkind[$arr.kind]}}</a>
+、<a href='sp_writeA.php?item={{$arr.id}}'>成績</a>
+</TD>
+{{if $arr.sportkind=='5'}}
+<TD><b>{{$this->Tol[$arr.id].TolA}}/{{$this->Tol[$arr.id].TolB}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].N2}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].N}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].S}}</b></TD>
+<TD align=left>{{$arr.sportkind}}.{{$this->sportkind_name[$arr.sportkind]}}</TD>
+<TD align=left>每組{{$arr.playera}}人,錄取{{$arr.passera}}人(接力:{{$arr.kgp}}組/{{$arr.kgm}}人)</TD>
+{{else}}	
+<TD><b>{{$this->Tol[$arr.id].Tol}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].N2}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].N}}</b></TD>
+<TD><b>{{$this->Tol[$arr.id].S}}</b></TD>
+<TD align=left>{{$arr.sportkind}}.{{$this->sportkind_name[$arr.sportkind]}}</TD>
+<TD align=left>每組{{$arr.playera}}人,錄取{{$arr.passera}}人。</TD>
+{{/if}}
+<TD>{{$arr.skind|strip_tags}}</TD>
+</tr>
+{{/foreach}}
+</table>
+
+{{include file=$this->pagefoot}}

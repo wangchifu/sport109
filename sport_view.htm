@@ -1,0 +1,52 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>【1.依項目名單輸出】
+<a href='sport_view_cla.php'>2.依班級名單輸出</a><br>　</b></TD></TR>
+</TABLE>
+<table  width='900'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='f1'  target="_blank">
+<TR style='font-size:11pt' bgcolor='#FFFFFF'>
+<TD colspan=4 align='center'>
+<INPUT TYPE='reset' Value='重新設定' >
+<INPUT TYPE='button' value='已報名全選/取消/反向' onclick="tagall()" >
+<INPUT TYPE='button' value='○選好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='APrint';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();">
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+
+</TD></TR>
+<TR style='font-size:11pt' bgcolor='#FFFFFF'>
+{{foreach from=$this->all item=arr}}
+{{if $arr.id!=''}}
+{{assign var="N" value=$arr.id}}
+<TD><label><input type='checkbox' name='spitem[{{$N}}]' value='{{$arr.id}}'>
+{{$arr.id}}{{$this->Im.$N.A}}({{$arr.btol}})</label></TD>
+{{else}}<TD></TD>{{/if}}
+{{if $arr.next_line=='yes'}}</tr><tr style='font-size:11pt' bgcolor='#FFFFFF'>{{/if}}
+{{/foreach}}
+</TR>
+
+
+</FORM> 
+</table>
+
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+
+function tagall() {
+var i =0;
+while (i < document.f1.elements.length) {
+var obj=document.f1.elements[i];
+var objx=document.f1.elements[i].name;//取得名稱
+// objx.substr(0,4)取得部分字串
+if (obj.type=='checkbox' && objx.substr(0,6)=='spitem') {
+if (obj.checked==1 ) {obj.checked=0;}
+else { obj.checked=1;}
+}
+i++;
+}
+}
+</script>
+
+{{include file=$this->pagefoot}}
+

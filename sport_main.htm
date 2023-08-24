@@ -1,0 +1,100 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>主項目管理</b></TD></TR>
+<TR><TD align=right>{{$this->links->show_page()}}</TD></TR>
+</TABLE>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD width=10%><b>ID</b></TD>
+<TD width=25%><b>名稱</b></TD>
+<TD width=10%><b>日期</b></TD>
+<TD width=10%><b>可報名否？<br>sign</b></TD>
+<TD width=10%><b>可大會操作<br>work</b></TD>
+<TD width=25%><b>說明</b></TD>
+<TD width=10%>編修/<a href='{{$smarty.server.PHP_SELF}}?act=add_form'>新增</a></TD></TR>
+{{if $smarty.get.act=='add_form' }}
+<!-- 新增表單   ---開始-->
+<tr align=center><td colspan=9>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}' Name='e1' enctype='multipart/form-data'>
+<table style='font-size:12pt'>
+<TR><TD>比賽名稱</TD><TD><INPUT TYPE='text' NAME='title' value='' size=20></TD></TR>
+<TR><TD>比賽日期</TD><TD>
+<input type="date" id="bookdate" placeholder="2014-09-18" name="year">
+</TD></TR>
+<TR><TD>報名設定</TD><TD>
+{{html_radios name='sign' options=$this->YN1 selected='Y' separator='&nbsp;'}}
+</TD></TR>
+<TR><TD>大會操作</TD><TD>
+{{html_radios name='work' options=$this->YN2 selected='Y' separator='&nbsp;'}}
+</TD></TR>
+<TR><TD>備註說明</TD><TD>
+<textarea name="memo" rows="5" cols="22"></textarea>
+</TD></TR>
+<TR><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='hidden' Name='id' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='add';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 新增表單   ---結束-->
+{{else}}
+{{foreach from=$this->all item=arr}}
+{{if $smarty.get.edit==$arr.id}}
+<!-- 編修表單   ---開始-->
+<tr align=center><td colspan='9'>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>ID</TD><TD>{{$arr.id|strip_tags}}<INPUT TYPE='hidden' NAME='id' value='{{$arr.id|strip_tags}}'></TD></TR>
+<TR><TD>名稱</TD><TD><INPUT TYPE='text' NAME='title' value='{{$arr.title|strip_tags}}' size=20></TD></TR>
+<TR><TD>日期</TD><TD><INPUT TYPE='text' NAME='year' value='{{$arr.year|strip_tags}}' size=20></TD></TR>
+<TR><TD>報名設定</TD><TD>
+{{html_radios name='sign' options=$this->YN1 selected=$arr.sign separator='&nbsp;'}}
+</TD></TR>
+<TR><TD>大會操作</TD><TD>
+{{html_radios name='work' options=$this->YN2 selected=$arr.work separator='&nbsp;'}}
+</TD></TR>
+<TR><TD>備註說明</TD><TD>
+<textarea name="memo" rows="5" cols="22">{{$arr.memo|strip_tags}}</textarea>
+</TD></TR>
+<tr><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 編修表單結束 -->
+
+<!-- 流覽資料  -->
+{{else}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr.id|strip_tags}}</TD>
+<TD>{{$arr.title|strip_tags}}</TD>
+<TD>{{$arr.year|strip_tags}}</TD>
+<TD>{{if $arr.sign=='Y'}}<B style="color:blue;">{{$arr.sign}}.{{$this->YN1[$arr.sign]}}</B>
+{{else}}<B style="color:red;">{{$arr.sign}}.{{$this->YN1[$arr.sign]}}</B>{{/if}}
+</TD>
+<TD>{{if $arr.work=='Y'}}<B style="color:blue;">{{$arr.work}}.{{$this->YN2[$arr.work]}}</B>
+{{else}}<B style="color:red;">{{$arr.work}}.{{$this->YN2[$arr.work]}}</B>{{/if}}
+</TD>
+<TD>{{$arr.memo|strip_tags}}</TD>
+<td><a href='{{$smarty.server.PHP_SELF}}?edit={{$arr.id}}&page={{$this->page}}'>修改</a>
+<a href='{{$smarty.server.PHP_SELF}}?form_act=del&id={{$arr.id}}&page={{$this->page}}' onclick="return window.confirm('真的刪除嗎？');">刪除</a>
+</td></tr>
+{{/if}}
+{{/foreach}}
+{{/if}}
+</table>
+
+{{include file=$this->pagefoot}}

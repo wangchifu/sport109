@@ -1,0 +1,102 @@
+<table align='center' bgColor='#eef8ff' border='0' borderColor='#9EBCDD' cellPadding='0' cellSpacing='1'>
+<tr style='color:red'>
+<td align='right' bgColor='#9EBCDD'>填寫說明</td>
+<td style='color:red;font-size:9pt'>本表會一次建立每一分組的項目資料。<BR>
+但每一分組的競賽順序與時間仍須一一設定。<BR>
+否則檢錄單與賽程表上不會出現相關資料。
+</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'>資料編號</td>
+<td>主題編號 
+<INPUT TYPE='hidden' name='id' value=''><INPUT TYPE='hidden' name='mid' value=''>
+</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'><FONT  COLOR='red'>*</FONT>項目名稱</td>
+<td><FONT  COLOR='red'>*</FONT>類別<select name='sportkind' >
+<option value=''>--未選擇--</option>
+{{html_options options=$this->Options.sportkind}}
+</select>
+<select name='item' >
+{{html_options options=$this->Options.sportname selected=$stu.score_balance}}
+</select>
+<label>
+<input type='checkbox' name='createnexttime' value='yes'><B style='color:#800000;'>一併建立初賽</B>
+<B style='font-size:10pt;'>(不選時直接建立決賽)</B></label>
+</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'><FONT  COLOR='red'>*</FONT>比賽日期</td>
+<td><label for="bookdate">日期：</label>
+<input type="date" id="bookdate" placeholder="2014-09-18" name="day1">
+<input type="time" id="bookdate" placeholder="08:30" name="day2">
+時:分(用方向鍵選擇)&nbsp;&nbsp;</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'><FONT  COLOR='red'>*</FONT>可參賽組別</td><td>
+{{ckBox('enterclass',$this->Options.sportclass,'6','')}}
+</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'>賽程</td>
+<td>初賽每組
+<input name='playera' size='3' style='font-size:14pt;color:blue;background-color: #FFCCCC;border-width:0px;'>
+<FONT  COLOR='red'>*</FONT>人，錄取前
+<input name='passera' size='3' style='font-size:14pt;color:blue;background-color: #FFCCCC;border-width:0px;'>
+<FONT  COLOR='red'>*</FONT>名進入決賽。<BR>
+<FONT SIZE='-1' COLOR='blue'>所謂每組,是指每次同時間多少人比賽，同次賽跑的人。
+</FONT><BR>
+<FONT  COLOR='red'>*</FONT>額外說明
+<input name='imemo' size='18' style='font-size:14pt;color:blue;background-color: #FFCCCC;border-width:0px;'>
+<BR>
+<FONT SIZE='-1' COLOR='blue'>額外說明：例如『擇優2人』。沒有額外的條件就不要填。</FONT>
+</td></tr>
+<tr><td align='right' bgColor='#9EBCDD'><FONT  COLOR='red'>*</FONT>接力類選項</td>
+<td>每單位(班)可報名
+<input name='kgp' size='2' style='font-size:12pt;color:blue;background-color: #FFCCCC;border-width:0px;' value='0'>
+組，每組
+<input name='kgm' size='2' style='font-size:12pt;color:blue;background-color: #FFCCCC;border-width:0px;' value='0'>
+人。<br>
+<FONT SIZE='-1' COLOR='blue'>(非接力類為0)</FONT></td></tr>
+<tr>
+<td align='right' bgColor='#9EBCDD'>成績與計分</td>
+<td><FONT  COLOR='red'>*</FONT>計分格式
+<input name='sunit' size='10' style='font-size:14pt;color:blue;background-color: #FFCCCC;border-width:0px;' value='00.00.0'><BR>
+<FONT SIZE='-1' COLOR='blue'>競賽類用0.00.00.0表示時.分.秒.x<BR>
+田賽類用00.00.0 表示公尺.公分.x<BR>
+語文類用000表示得分</FONT>
+<BR><FONT  COLOR='red'>*</FONT>
+排列方式<SELECT NAME='sord'>
+<option value=''>未選擇</option>
+<option value='1'>分數低，成績好</option>
+<option value='2'>分數高，成績好</option>
+</SELECT><BR>
+<FONT SIZE='-1' COLOR='blue'>分數低，成績好：如賽跑。<BR>分數高，成績好：如跳高跳遠。</FONT>
+</td></tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'>說明</td>
+<td>所謂每組,是指每次同時間多少人比賽。例如同次賽跑的人</td>
+</tr>
+
+<tr>
+<td align='right' bgColor='#9EBCDD'><FONT  COLOR='red'>*</FONT>比賽地點</td>
+<td><input name='place' size='20' style='font-size:14pt;color:blue;background-color: #FFCCCC;border-width:0px;' value='操場'>
+</td></tr>
+
+<tr>
+<td align='center' bgColor='#9EBCDD' colspan=2>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if (window.confirm('輸入完成？')){f1.form_act.value='item_add';f1.submit();}" class=bur2>
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+<br><br>
+</td></tr>
+</table>

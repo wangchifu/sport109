@@ -1,0 +1,33 @@
+{{include file=$this->pagehead}}
+<center style='font-size:10pt;'><img src='img/109.0209.jpg'><br>
+
+	<h1>API 介接設定</h1>
+	<form action="install.php" method="post">
+		<table>
+			<tr>
+				<th>用戶端 ID</th>
+				<th>用戶端密碼</th>
+			</tr>
+			<tr>
+				<td>
+				<input name="API_client_id" required>
+				</td>
+				<td>
+				<input name="API_client_secret" required>
+				</td>
+			</tr>
+		</table>
+		<input type="submit" name="send_api" value="送出API" id="bb" onclick="hide()">(請稍後...不要重複按)
+	</form>
+	<script>
+		function hide(){
+			var link = document.getElementById('bb');
+			link.style.display = 'none';
+		}
+	</script>
+	<hr>
+	<h1>API 請至 <a href="https://cloudschool.chc.edu.tw" target="_blank">cloudschool.chc.edu.tw</a></h1>
+	找到-->  系統管理- 模組管理- API及憑證設定- 新增學校伺服器API<br>
+	<img src="img/api.png">
+
+{{include file=$this->pagefoot}}

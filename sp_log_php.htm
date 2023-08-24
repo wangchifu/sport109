@@ -1,0 +1,93 @@
+{{include file=$this->pagehead}}
+{{include file='menu.php'}}
+<body>
+<TABLE width='800'  border='0' align='center'>
+<TR><TD align=center><b>登入記錄</b></TD></TR>
+<TR><TD align=right>{{$this->links->show_page()}}</TD></TR>
+</TABLE>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD width=6%><b>流水號</b></TD>
+<TD width=25%><b>title</b></TD>
+<TD width=20%><b>日期</b></TD>
+<TD width=15%><b>IP</b></TD>
+<TD width=32%><b>內容</b></TD>
+<TD width=8%>編修/<a href='{{$smarty.server.SCRIPT_NAME}}?act=add_form'>新增</a></TD></TR>
+{{if $smarty.get.act=='add_form' }}
+<!-- 新增表單   ---開始-->
+<tr align=center><td colspan=4>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>流水號</TD><TD><INPUT TYPE='text' NAME='id' value='' size=20></TD></TR>
+<TR><TD>日期</TD><TD><INPUT TYPE='text' NAME='iday' value='' size=20></TD></TR>
+<TR><TD>內容</TD><TD><INPUT TYPE='text' NAME='info' value='' size=20></TD></TR>
+<TR><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='add';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 新增表單   ---結束-->
+{{else}}
+{{foreach from=$this->all item=arr}}
+{{if $smarty.get.edit==$arr.id}}
+<!-- 編修表單   ---開始-->
+<tr align=center><td colspan='5'>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}'  Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>流水號</TD><TD>{{$arr.id|strip_tags}}<INPUT TYPE='hidden' NAME='id' value='{{$arr.id|strip_tags}}'></TD></TR>
+<TR><TD>標題</TD><TD><INPUT TYPE='text' NAME='title' value='{{$arr.title}}' size=20></TD></TR>
+<TR><TD>日期</TD><TD><INPUT TYPE='text' NAME='iday' value='{{$arr.iday|strip_tags}}' size=20></TD></TR>
+<TR><TD>IP</TD><TD><INPUT TYPE='text' NAME='addr' value='{{$arr.addr}}' size=20></TD></TR>
+<TR><TD>內容</TD><TD>
+<textarea name="info" rows="6" cols="20">{{$arr.info|strip_tags}}</textarea>
+</TD></TR>
+<tr><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 編修表單結束 -->
+
+<!-- 流覽資料  -->
+{{else}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr.id}}</TD>
+<TD>{{$arr.title}}</TD>
+<TD>{{$arr.iday}}</TD>
+<TD>{{$arr.addr}}</TD>
+<TD align=left><span onclick="showH('v{{$arr.id}}')" style='color:blue;'>詳情</span><div id="v{{$arr.id}}" style="display:none;">{{$arr.info}}</div></TD>
+<td><a href='{{$smarty.server.SCRIPT_NAME}}?edit={{$arr.id}}&page={{$this->page}}'>修改</a>
+<a href='#' onclick="if( window.confirm('真的刪除嗎？確定？')){d1.id.value='{{$arr.id}}';d1.form_act.value='del';d1.submit();}">刪除</a>
+</td></tr>
+{{/if}}
+{{/foreach}}
+{{/if}}
+</table>
+
+<br>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='d1' >
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='id'  value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+<input type='hidden' name='page' value='{{$this->page}}'>
+</FORM>
+<Script LANGUAGE='JavaScript' TYPE='text/javascript'>
+ function showH(id) {
+	var X = document.getElementById(id);
+	if (X.style.display=='none'){X.style.display='';}
+	else{X.style.display='none';}
+ }
+</script>
+{{include file=$this->pagefoot}}

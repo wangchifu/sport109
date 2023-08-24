@@ -1,0 +1,152 @@
+<html><head>
+<meta http-equiv='CONTENT-TYPE' content='text/html; charset=UTF-8'>
+<title>比賽項目管理</title>
+<meta name='generator' content='Script By 二林網管程式產生器'>
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+function Mover(obj) {obj.style.backgroundColor='#E6E6FA';}
+function Mout(obj) { obj.style.backgroundColor='#FFFFFF';}
+</script>
+<style>
+<!--您的CSS樣式表-->
+A:link{text-decoration:none;color:blue; }
+A:visited{text-decoration:none;color:blue; }
+A:hover{text-decoration: none;color:red;}
+</style>
+</head>
+<!--{include file=$this->pagehead}載入表頭-->
+<body>
+<TABLE width='90%'  border='0' align='center'>
+<TR><TD align=center><b>比賽項目管理</b></TD></TR>
+<TR><TD align=right>{{$this->links->show_page()}}</TD></TR>
+</TABLE>
+<table  width='90%'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:11pt' bgcolor='#E5E5E5'>
+<TD><b>ID</b></TD>
+<TD><b>主項</b></TD>
+<TD><b>項目名稱</b></TD>
+<TD><b>組別</b></TD>
+<TD><b>順序</b></TD>
+<TD><b>類別</b></TD>
+<TD><b>計分格式</b></TD>
+<TD><b>排列方式</b></TD>
+<TD><b>初賽</b></TD>
+<TD><b>錄取</b></TD>
+<TD><b>可報名組數</b></TD>
+<TD><b>每組人數</b></TD>
+<TD><b>地點</b></TD>
+<TD><b>類別</b></TD>
+<TD><b>子類別</b></TD>
+<TD><b>res</b></TD>
+<TD><b>比賽時間</b></TD>
+<TD><b>結束時間</b></TD>
+<TD><b>額外說明</b></TD>
+<TD>編修/<a href='{{$smarty.server.PHP_SELF}}?act=add_form'>新增</a></TD></TR>
+{{if $smarty.get.act=='add_form' }}
+<!-- 新增表單   ---開始-->
+<tr align=center><td colspan=20>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}' Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>ID</TD><TD><INPUT TYPE='text' NAME='id' value='' size=20></TD></TR>
+<TR><TD>主項</TD><TD><INPUT TYPE='text' NAME='mid' value='' size=20></TD></TR>
+<TR><TD>項目名稱</TD><TD><INPUT TYPE='text' NAME='item' value='' size=20></TD></TR>
+<TR><TD>組別</TD><TD><INPUT TYPE='text' NAME='enterclass' value='' size=20></TD></TR>
+<TR><TD>順序</TD><TD><INPUT TYPE='text' NAME='sportorder' value='' size=20></TD></TR>
+<TR><TD>類別</TD><TD><INPUT TYPE='text' NAME='sportkind' value='' size=20></TD></TR>
+<TR><TD>計分格式</TD><TD><INPUT TYPE='text' NAME='sunit' value='' size=20></TD></TR>
+<TR><TD>排列方式</TD><TD><INPUT TYPE='text' NAME='sord' value='' size=20></TD></TR>
+<TR><TD>初賽</TD><TD><INPUT TYPE='text' NAME='playera' value='' size=20></TD></TR>
+<TR><TD>錄取</TD><TD><INPUT TYPE='text' NAME='passera' value='' size=20></TD></TR>
+<TR><TD>可報名組數</TD><TD><INPUT TYPE='text' NAME='kgp' value='' size=20></TD></TR>
+<TR><TD>每組人數</TD><TD><INPUT TYPE='text' NAME='kgm' value='' size=20></TD></TR>
+<TR><TD>地點</TD><TD><INPUT TYPE='text' NAME='place' value='' size=20></TD></TR>
+<TR><TD>類別</TD><TD><INPUT TYPE='text' NAME='kind' value='' size=20></TD></TR>
+<TR><TD>子類別</TD><TD><INPUT TYPE='text' NAME='skind' value='' size=20></TD></TR>
+<TR><TD>res</TD><TD><INPUT TYPE='text' NAME='res' value='' size=20></TD></TR>
+<TR><TD>比賽時間</TD><TD><INPUT TYPE='text' NAME='sporttime' value='' size=20></TD></TR>
+<TR><TD>結束時間</TD><TD><INPUT TYPE='text' NAME='overtime' value='' size=20></TD></TR>
+<TR><TD>額外說明</TD><TD><INPUT TYPE='text' NAME='imemo' value='' size=20></TD></TR>
+<TR><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act' value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='add';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 新增表單   ---結束-->
+{{else}}
+{{foreach from=$this->all item=arr}}
+{{if $smarty.get.edit==$arr.id}}
+<!-- 編修表單   ---開始-->
+<tr align=center><td colspan='20'>
+<FORM METHOD=POST ACTION='{{$smarty.server.PHP_SELF}}'  Name='e1' enctype='multipart/form-data'>
+<table>
+<TR><TD>ID</TD><TD>{{$arr.id|strip_tags}}<INPUT TYPE='hidden' NAME='id' value='{{$arr.id|strip_tags}}'></TD></TR>
+<TR><TD>主項</TD><TD><INPUT TYPE='text' NAME='mid' value='{{$arr.mid|strip_tags}}' size=20></TD></TR>
+<TR><TD>項目名稱</TD><TD><INPUT TYPE='text' NAME='item' value='{{$arr.item|strip_tags}}' size=20></TD></TR>
+<TR><TD>組別</TD><TD><INPUT TYPE='text' NAME='enterclass' value='{{$arr.enterclass|strip_tags}}' size=20></TD></TR>
+<TR><TD>順序</TD><TD><INPUT TYPE='text' NAME='sportorder' value='{{$arr.sportorder|strip_tags}}' size=20></TD></TR>
+<TR><TD>類別</TD><TD><INPUT TYPE='text' NAME='sportkind' value='{{$arr.sportkind|strip_tags}}' size=20></TD></TR>
+<TR><TD>計分格式</TD><TD><INPUT TYPE='text' NAME='sunit' value='{{$arr.sunit|strip_tags}}' size=20></TD></TR>
+<TR><TD>排列方式</TD><TD><INPUT TYPE='text' NAME='sord' value='{{$arr.sord|strip_tags}}' size=20></TD></TR>
+<TR><TD>初賽</TD><TD><INPUT TYPE='text' NAME='playera' value='{{$arr.playera|strip_tags}}' size=20></TD></TR>
+<TR><TD>錄取</TD><TD><INPUT TYPE='text' NAME='passera' value='{{$arr.passera|strip_tags}}' size=20></TD></TR>
+<TR><TD>可報名組數</TD><TD><INPUT TYPE='text' NAME='kgp' value='{{$arr.kgp|strip_tags}}' size=20></TD></TR>
+<TR><TD>每組人數</TD><TD><INPUT TYPE='text' NAME='kgm' value='{{$arr.kgm|strip_tags}}' size=20></TD></TR>
+<TR><TD>地點</TD><TD><INPUT TYPE='text' NAME='place' value='{{$arr.place|strip_tags}}' size=20></TD></TR>
+<TR><TD>類別</TD><TD><INPUT TYPE='text' NAME='kind' value='{{$arr.kind|strip_tags}}' size=20></TD></TR>
+<TR><TD>子類別</TD><TD><INPUT TYPE='text' NAME='skind' value='{{$arr.skind|strip_tags}}' size=20></TD></TR>
+<TR><TD>res</TD><TD><INPUT TYPE='text' NAME='res' value='{{$arr.res|strip_tags}}' size=20></TD></TR>
+<TR><TD>比賽時間</TD><TD><INPUT TYPE='text' NAME='sporttime' value='{{$arr.sporttime|strip_tags}}' size=20></TD></TR>
+<TR><TD>結束時間</TD><TD><INPUT TYPE='text' NAME='overtime' value='{{$arr.overtime|strip_tags}}' size=20></TD></TR>
+<TR><TD>額外說明</TD><TD><INPUT TYPE='text' NAME='imemo' value='{{$arr.imemo|strip_tags}}' size=20></TD></TR>
+<tr><td colspan=2 align=center>
+<INPUT TYPE='hidden' Name='form_act'  value=''>
+<INPUT TYPE='hidden' Name='page' Value='{{$this->page}}'>
+<INPUT TYPE='reset' Value='重新設定' class=bur2 >
+<INPUT TYPE='button' value='填好送出' onclick="if( window.confirm('要寫入了喔？確定？')){this.form.form_act.value='update';this.form.submit()}">
+<INPUT TYPE='button' value='取消返回' onclick="history.back();" class=bur2>
+</td></tr>
+</table>
+</FORM>
+</td></tr>
+<!-- 編修表單結束 -->
+
+<!-- 流覽資料  -->
+{{else}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)">
+<TD>{{$arr.id|strip_tags}}</TD>
+<TD>{{$arr.mid|strip_tags}}</TD>
+<TD>{{$arr.item|strip_tags}}</TD>
+<TD>{{$arr.enterclass|strip_tags}}</TD>
+<TD>{{$arr.sportorder|strip_tags}}</TD>
+<TD>{{$arr.sportkind|strip_tags}}</TD>
+<TD>{{$arr.sunit|strip_tags}}</TD>
+<TD>{{$arr.sord|strip_tags}}</TD>
+<TD>{{$arr.playera|strip_tags}}</TD>
+<TD>{{$arr.passera|strip_tags}}</TD>
+<TD>{{$arr.kgp|strip_tags}}</TD>
+<TD>{{$arr.kgm|strip_tags}}</TD>
+<TD>{{$arr.place|strip_tags}}</TD>
+<TD>{{$arr.kind|strip_tags}}</TD>
+<TD>{{$arr.skind|strip_tags}}</TD>
+<TD>{{$arr.res|strip_tags}}</TD>
+<TD>{{$arr.sporttime|strip_tags}}</TD>
+<TD>{{$arr.overtime|strip_tags}}</TD>
+<TD>{{$arr.imemo|strip_tags}}</TD>
+<td><a href='{{$smarty.server.PHP_SELF}}?edit={{$arr.id}}&page={{$this->page}}'>修改</a>
+<a href='{{$smarty.server.PHP_SELF}}?form_act=del&id={{$arr.id}}&page={{$this->page}}' onclick="return window.confirm('真的刪除嗎？');">刪除</a>
+</td></tr>
+{{/if}}
+{{/foreach}}
+{{/if}}
+</table>
+
+<br><div align='center' style='color: #BFBFBF;font-size: 9pt;'>
+<a href='http://163.23.89.100/~chi/blog/' target='_target'>二林網管</a>
+ Script By 二林網管 PDO + SQLite 程式寫作工具箱2014.07</div>
+</body>
+</html>
+<!-- {include file=$this->pagefoot}  載入表尾-->

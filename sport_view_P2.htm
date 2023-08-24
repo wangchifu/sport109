@@ -1,0 +1,31 @@
+<html><head>
+<meta http-equiv='CONTENT-TYPE' content='text/html; charset=UTF-8'>
+<title>運動檢錄系統</title>
+<meta name='generator' content='Script By 二林網管程式產生器'>
+<script LANGUAGE='JavaScript' TYPE='text/javascript'>
+function Mover(obj) {obj.style.backgroundColor='#E6E6FA';}
+function Mout(obj) { obj.style.backgroundColor='#FFFFFF';}
+</script>
+<style>
+<!--您的CSS樣式表-->
+A:link{text-decoration:none;color:blue; }
+A:visited{text-decoration:none;color:blue; }
+A:hover{text-decoration: none;color:red;}
+.bt1{font-size:10pt;color:#A52A2A;border:1px #003C9D solid;}
+.bt2{font-size:10pt;color:#A52A2A;border:1px #003C9D solid;text-align:center;}
+</style>
+</head>
+<body>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR style='font-size:11pt' bgcolor='#FFFFFF'>
+<TD>
+{{foreach from=$this->all key=K item=arr}}
+<p><b>◎{{$K}}班參賽人員項目</b><br>
+{{$this->myBox($arr,4)}}
+</p>
+{{/foreach}}
+</TD></TR>
+</table>
+
+</body>
+</html>

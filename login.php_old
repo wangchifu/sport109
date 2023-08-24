@@ -1,0 +1,221 @@
+<?php
+
+include "109.conf.php";
+//如果整個程式都須認證,請拿開下行註解
+//Auth();//簡易認證
+// session_start();
+
+// login_chk();
+//if( !isset( $_SESSION ) )  session_start();
+// unset($_SESSION['main_id']);
+//session_start();unset($_SESSION);
+
+if (gVar('login')=='out') login_out();
+
+//a.建立物件
+$obj= new sport_main($CONN,$smarty);
+
+$obj->code=$school_code;
+
+// 初始化工作-- 
+// $obj->init();
+
+//b.處理程序
+$obj->process();
+
+
+/*
+sport_main物件 class 應用說明
+用到的變數$_POST['form_act']的值為 add、update、Search處理程式新增、更新、搜尋
+'id','title','year','signtime','stoptime','work_start','work_end','memo'
+------------建表語法
+CREATE TABLE `{$this->TB}`( `id` INTEGER PRIMARY KEY,`title`,`year`,`signtime`,`stoptime`,`work_start`,`work_end`,`memo`);
+------------工具箱用
+id,title,year,signtime,stoptime,work_start,work_end,memo
+ID,名稱,日期,報名時間,結束報名,大會操作時間,大會結束時間,備註
+------------檢核用
+id,ID
+title,名稱
+year,日期
+signtime,報名時間
+stoptime,結束報名
+work_start,大會操作時間
+work_end,大會結束時間
+memo,備註
+
+*/
+
+class sport_main{
+	var $CONN;//PHP5的PDO物件
+	var $smarty;//smarty物件
+	var $size=10;//每頁筆數
+	var $page;//目前頁數
+	var $tol;//資料總筆數
+	var $token;//編碼
+	var $code;//學校代碼
+	//資料表欄位
+
+	/* 1.建構函式 */
+	function __construct($CONN,$smarty){
+		$this->CONN=$CONN;
+		$this->smarty=$smarty;
+	}
+
+	/* 2.初始化一些數值處理函式  */
+	function init() { }
+
+
+
+	/* 3.物件流程函式  */
+	function process() {
+		//初始化一些數值
+		$this->init();
+
+		//建立Token
+		$myToken=new myToken();
+		if ($myToken->check()=='Y'){
+			$form_act=pVar('form_act');
+			$kind=pVar('kind');
+			if ($form_act=='login'&& $kind=='G') $this->checkG();
+			if ($form_act=='login'&& $kind=='L') $this->checkL();
+		}
+
+		//隨機驗證碼
+		$this->token=$myToken->make();
+		//擷取資料
+		$this->all();
+
+		//顯示畫面
+		$this->display();
+	}
+	/* 4.顯示畫面處理函式*/
+	function display(){
+		$tpl = __SitePtah."/login.php.htm";
+		//$tpl = dirname(__file__)."/sport_main.htm";
+		//$this->smarty->template_dir=dirname(__file__)."/templates/";
+		$this->pagehead= __SitePtah."/sport_head.htm";//表頭
+		$this->pagefoot=__SitePtah."/sport_foot.htm";//表尾
+		$this->smarty->assign("this",$this);
+		$this->smarty->display($tpl);
+	}
+
+	/* 5.擷取資料給網頁呈現處理函式*/
+	function all(){
+
+
+	}
+
+	/* 登入處理 */
+	function checkG(){
+		//echo '<pre>';print_r($_POST);die();
+		 $chk=pVar('CHK');
+		 if ($_SESSION['Login_img']!=$chk) backe('錯誤的驗證碼！');
+		 $user=pVar('user');
+		 $pass=pVar('pass');
+		if ($user=='' ||$pass=='' ) backe('請填妥帳號密碼！');
+		$Ans=gsuiteAuth($user,$pass);
+		if ($Ans=='N') backe('登入失敗，請確認帳號密碼無誤！');
+
+		if ($this->code!=$Ans['code']) backe('登入失敗，非本校人員！');
+		
+//		$Ans['code']
+//		echo '<pre>';print_r($Ans);die();		
+//		if (!isset( $_SESSION ) )  session_start();
+//		if (is_array($Ans)) $_SESSION['auth']=$Ans;
+		//echo '<pre>';print_r($Ans);die();
+		// print_r($Ans);
+		/* 取出新增語法； 可於這裡進行其他安全性或額外處理*/
+		$SQL="select * from `teach` where edukey='{$Ans['edu_key']}' ";
+		// echo $SQL;
+		$rs=$this->CONN->query($SQL) or die($SQL);
+		$arr=$rs->fetchAll();
+		if (count($arr)==1){
+			//$SQL="update `teach`  set pass='{$pass}' , modify='{$modify}'  where edukey='{$Ans['edu_key']}' ";
+			//$rs=$this->CONN->query($SQL) or die($SQL);
+			//$SQL="select * from `teach` where edukey='{$Ans['edu_key']}' ";
+			//$rs=$this->CONN->query($SQL) or die($SQL);
+			
+			Login_log($arr[0]['tname'].$arr[0]['user'].'登入成功！');
+			//$arr=$rs->fetchAll();
+			if( !isset( $_SESSION ) )  session_start();
+			$_SESSION['Auth']=$arr[0];
+			$URL='index.php';
+			Header("Location:$URL");
+			exit;
+		}
+		Login_log($user.'登入失敗！');
+		backe('認證失敗！請確認帳號密碼無誤！');
+		//最後一筆新增的編號
+		//$Insert_ID= $this->CONN->lastInsertId();
+		//$URL=$_SERVER['SCRIPT_NAME']."?page=".$this->page;
+		$URL=$_SERVER['SCRIPT_NAME'];
+		//$URL='ind.php';
+		Header("Location:$URL");
+	}
+
+	/* 本機登入處理 */
+	function checkL(){
+		//echo '<pre>';print_r($_POST);die();
+		 $chk=pVar('CHK');
+		 if ($_SESSION['Login_img']!=$chk) backe('錯誤的驗證碼！');
+		 $user=pVar('user');
+		 $pass=pVar('pass');
+		if ($user=='' ||$pass=='' ) backe('請填妥帳號密碼！');
+		$pass1=strtoupper($pass);
+		$edukey=hash('sha256',$pass1);//輸出 64 字元,  256-bit (32-byte)
+		$SQL="select * from `teach` where edukey='{$edukey}' and user='{$user}' ";
+		$rs=$this->CONN->query($SQL) or die($SQL);
+		$arr=$rs->fetchAll();
+
+		if (count($arr)==1){
+			//$SQL="update `teach`  set pass='{$pass}' , modify='{$modify}'  where edukey='{$Ans['edu_key']}' ";
+			//$rs=$this->CONN->query($SQL) or die($SQL);
+			// Login_log('登入成功！');
+			Login_log($arr[0]['tname'].$arr[0]['user'].'登入成功！');
+			//$SQL="select * from `teach` where edukey='{$Ans['edu_key']}' ";
+			//$rs=$this->CONN->query($SQL) or die($SQL);
+			//$arr=$rs->fetchAll();
+			if( !isset( $_SESSION ) )  session_start();
+			$_SESSION['Auth']=$arr[0];
+			$URL='index.php';
+			Header("Location:$URL");
+			exit;
+		}
+		Login_log($user.'登入失敗！');
+		backe('認證失敗！請確認帳號密碼無誤！');
+		//最後一筆新增的編號
+		//$Insert_ID= $this->CONN->lastInsertId();
+		//$URL=$_SERVER['SCRIPT_NAME']."?page=".$this->page;
+		$URL=$_SERVER['SCRIPT_NAME'];
+		//$URL='ind.php';
+		Header("Location:$URL");
+	}
+
+
+
+
+	function gTime($a,$b){
+		if ($_POST[$a]=='') backe('日期未填！');
+		if ($_POST[$b]=='') backe('時間未填！');
+		$A=pVar($a);$B=pVar($b).':00';
+		$time=	$A.' '.$B;
+		if (strlen($time)!=19) backe('日期時間格式有誤！');
+		return $time;	
+	}
+
+
+
+	/* 9.過濾及SQL語法處理函式 */
+	function gSQLStr($_action){	}
+
+	/* 	10.尋找資料函式	*/
+	function Search(){}
+
+
+
+
+
+}
+//end class
+
+

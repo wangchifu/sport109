@@ -1,0 +1,21 @@
+{{include file=$this->pagehead}}
+<center><img src='img/109.0209.jpg'></center>
+<table  width='800'  border='0' align='center' cellpadding='1' cellspacing='1' bgcolor='#DEE3E7' style='table-layout: fixed;word-wrap:break-word;font-size:10pt'>
+<TR align=center  style='font-size:12pt' bgcolor='#E5E5E5'>
+<TD width=70%><b>名稱</b></TD>
+<TD width=30%><b>日期</b></TD>
+{{foreach from=$this->all item=arr}}
+<tr align=center bgcolor='#FFFFFF' onmouseover="Mover(this)" onmouseout="Mout(this)" style='font-size:20pt;'>
+<TD><a href='#' onclick="f1.mid.value='{{$arr.id}}';f1.act.value='add';f1.submit();">
+{{$arr.title}}</a></TD>
+<TD>{{$arr.year}}</TD>
+</tr>
+{{/foreach}}
+</table>
+<FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}'  Name='f1'>
+<INPUT TYPE='hidden' Name='act'  value=''>
+<INPUT TYPE='hidden' Name='mid'  value=''>
+<input type='hidden' name='token' value='{{$this->token}}'>
+</FORM>
+
+{{include file=$this->pagefoot}}
