@@ -53,7 +53,8 @@ class sport_main{
 	var $TB='';
 	//資料表欄位
 	var $fields=array('id','title','year','signtime','stoptime','work_start','work_end','memo');
-	var $tb=array('teach','stud','sport_var','sport_main','sport_item','sport_res','sport_login');
+	//var $tb=array('teach','stud','sport_var','sport_main','sport_item','sport_res','sport_login');
+	var $tb=array('teach','stud','sport_var','sport_main','sport_item','sport_res');
 	var $tb_memo=array('教師資料表','學生資料表','變數資料表','比賽名稱表','項目名稱表','報名成績表','登入記錄');
 	/* 1.建構函式 */
 	function __construct($CONN,$smarty){

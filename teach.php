@@ -162,7 +162,7 @@ class teach{
 	/* 6.新增處理函式 */
 	function add(){
 		//echo "<pre>";print_r($_POST);die();
-		Auth();//簡易認證
+		//Auth();//簡易認證
 		//對POST的資料額外處理,請自行修訂符合自己須求
 		//$fields=array('id','tname','sex','office','title','user','pass','cla','edukey','created','modify');
 		foreach ($this->fields as $FF){

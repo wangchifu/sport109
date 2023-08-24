@@ -21,15 +21,15 @@
 <tr align=center><td colspan=12>
 <FORM METHOD=POST ACTION='{{$smarty.server.SCRIPT_NAME}}' Name='e1' enctype='multipart/form-data'>
 <table>
-<TR><TD>流水號</TD><TD><INPUT TYPE='text' NAME='id' value='' size=20></TD></TR>
-<TR><TD>姓名</TD><TD><INPUT TYPE='text' NAME='tname' value='' size=20></TD></TR>
+<TR><TD>流水號</TD><TD><INPUT TYPE='text' NAME='id' value='' size=20 readonly placeholder="(免填)"></TD></TR>
+<TR><TD>姓名</TD><TD><INPUT TYPE='text' NAME='tname' value='' size=20 required="required"></TD></TR>
 <TR><TD>性別</TD><TD><INPUT TYPE='text' NAME='sex' value='' size=20></TD></TR>
 <TR><TD>處室</TD><TD><INPUT TYPE='text' NAME='office' value='' size=20></TD></TR>
 <TR><TD>職稱</TD><TD><INPUT TYPE='text' NAME='title' value='' size=20></TD></TR>
 <TR><TD>帳號</TD><TD><INPUT TYPE='text' NAME='user' value='' size=20></TD></TR>
 <TR><TD>密碼</TD><TD><INPUT TYPE='text' NAME='pass' value='' size=20></TD></TR>
 <TR><TD>班級</TD><TD><INPUT TYPE='text' NAME='cla' value='' size=20></TD></TR>
-<TR><TD>編碼</TD><TD><INPUT TYPE='text' NAME='edukey' value='' size=20></TD></TR>
+<TR><TD>編碼</TD><TD><INPUT TYPE='text' NAME='edukey' value='' size=20 required="required" placeholder="(唯一值)"></TD></TR>
 <TR><TD>建立時間</TD><TD><INPUT TYPE='text' NAME='created' value='' size=20></TD></TR>
 <TR><TD>變更時間</TD><TD><INPUT TYPE='text' NAME='modify' value='' size=20></TD></TR>
 <TR><td colspan=2 align=center>
